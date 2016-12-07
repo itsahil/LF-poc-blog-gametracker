@@ -1,0 +1,206 @@
+// Chelsea GameTracker POC
+// Live Blog + Content Tags allows for Custom CSS on a per post basis
+// LiveBlog + Custom Button + Content Tag API
+
+
+<html>
+  <head>
+    <script src="//cdn.livefyre.com/Livefyre.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  </head>
+<body>
+<style>
+button {
+  margin-bottom: 30px;
+}
+#livefyre {
+  margin-top: 50px;
+}
+.fyre-comment-wrapper {
+  background-color: #E4EAF0;
+  padding-bottom: 15px;
+}
+.fyre-featured-icon, .fyre-featured-text, .fyre-comment-user, .fyre-comment-like, .fyre-comment-reply, .fyre-comment-date, .fyre-share-link, .fyre-feature-link {
+  display: none !important;
+}
+.fyre-tag-content-opp-goal {
+  background-image: url('http://icons.iconarchive.com/icons/giannis-zographos/british-football-club/128/Leicester-City-icon.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 100%;
+  max-width: 55%;
+  margin-left: 45%;
+  border-right: 5px solid #888c90;
+  padding-right: 90px;
+}
+.fyre-tag-content-opp-goal .fyre-comment-tag {
+  background-image: url('http://image.flaticon.com/icons/png/512/53/53246.png');
+  display: block !important;
+  float: left;
+  background-color: #E4EAF0;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  right: 15px;
+  height: 50px;
+  width: 50px;
+}
+.fyre-tag-content-cfcgoal {
+  background-image: url('http://futhead.cursecdn.com/static/img/15/clubs_large/5.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: auto 90%;
+  max-width: 55%;
+  margin-right: 45%;
+  border-left: 5px solid #0617B8;
+  padding-right: 100px;
+}
+.fyre-tag-content-cfcgoal .fyre-comment-tag {
+  background-image: url('http://image.flaticon.com/icons/png/512/53/53246.png');
+  display: block !important;
+  float: left;
+  background-color: #E4EAF0;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  left: 100%;
+  height: 50px;
+  width: 50px;
+}
+.fyre-tag-content-cfc-red {
+  background-image: url('http://futhead.cursecdn.com/static/img/15/clubs_large/5.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: auto 90%;
+  max-width: 55%;
+  margin-right: 45%;
+  border-left: 5px solid #0617B8;
+  padding-right: 90px;
+}
+.fyre-tag-content-cfc-red .fyre-comment-tag {
+  background-image: url('https://image.spreadshirtmedia.com/image-server/v1/designs/11641474,width=178,height=178/red-card-referee.png');
+  display: block !important;
+  float: left;
+  background-color: #E4EAF0;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  left: 100%;
+  height: 50px;
+  width: 50px;
+}
+ .fyre-comment-actions {
+  left: 30%;
+}
+</style>
+
+<button id="postbutton">Add Tag</button><br><br>
+<div class="auth">
+I Am: <select name="personas" id="personas">
+	  <option value="">Please Select a User Profile, then click Sign In</option>
+		  <option value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsInVzZXJfaWQiOiI1N2Y0MTIwMzFlNWZiNDIyNzgwMDNmNjkiLCJkaXNwbGF5X25hbWUiOiJzYWhpbDEyMyIsImV4cGlyZXMiOjEwMTQ3NTY3Njk4NS4zMjcsImlhdCI6MTQ3NTY3Njk4NX0.98kvyMjl4YU8CyKpy7ofF8Gp_m0DTpYNOSYXdtjGNp8">sahil123</option>
+		  <option value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsInVzZXJfaWQiOiJzeXN0ZW0iLCJkaXNwbGF5X25hbWUiOiJzeXN0ZW0iLCJleHBpcmVzIjoxNDc2OTg4Mzg1LjcyNywiaWF0IjoxNDc2OTg4Mzg0fQ.8yYobiITOvjbkcX2S5rasCNIU5xSjDcz56lq8HLTwWE">system</option>
+		  <option value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsInVzZXJfaWQiOiI1NmU2ZjA0ODhiYjk5YTFiMDlkYTkxMGUiLCJkaXNwbGF5X25hbWUiOiJzYWhpbCIsImV4cGlyZXMiOjEwMTQ3NjY0MTAyNC41NDUsImlhdCI6MTQ3NjY0MTAyNH0.DzIyGXpmnjyabijUippGA0emgvOb5eLYTFhnqCoK_sk">sahil</option>
+	</select>
+</div>
+<div id="livefyre"></div>
+
+<script>
+var tagApi;
+  
+var customActionButtons = [
+	{
+		key: "Chelsea Goal",
+		callback: function(contentInfo){
+			console.log(contentInfo.contentId);
+			var tagApi = "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/"+ contentInfo.contentId+"/";
+			console.log("this is the api url = "+tagApi);
+			$.ajax({
+			  type: "post",
+			  url: "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/"+ contentInfo.contentId+"/",
+			  data: {"lftoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsImV4cGlyZXMiOjE0ODM3MzkyODcuNjQ0NzA0LCJ1c2VyX2lkIjoiNTZlNmYwNDg4YmI5OWExYjA5ZGE5MTBlIn0.IyCVpP4_uUu7HZf6MO-uuJQbAbmCarbqD47dvjmzRss", "tag_name": "cfcgoal"},
+			  success: function (response) {
+			        console.log(response);
+			    },
+			  dataType: "json"
+			});      
+		}},
+	{
+		key: "Opposition Goal",
+		callback: function(contentInfo){
+			console.log(contentInfo.contentId);
+			var tagApi = "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/"+ contentInfo.contentId+"/";
+			console.log("this is the api url = "+tagApi);
+			$.ajax({
+			  type: "post",
+			  url: "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/"+ contentInfo.contentId+"/",
+			  data: {"lftoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsImV4cGlyZXMiOjE0ODM3MzkyODcuNjQ0NzA0LCJ1c2VyX2lkIjoiNTZlNmYwNDg4YmI5OWExYjA5ZGE5MTBlIn0.IyCVpP4_uUu7HZf6MO-uuJQbAbmCarbqD47dvjmzRss", "tag_name": "opp-goal"},
+			  success: function (response) {
+			        console.log(response);
+			    },
+			  dataType: "json"
+			});      
+		}},
+	{
+		key: "Chelsea Red Card",
+		callback: function(contentInfo){
+			console.log(contentInfo.contentId);
+			var tagApi = "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/"+ contentInfo.contentId+"/";
+			console.log("this is the api url = "+tagApi);
+			$.ajax({
+			  type: "post",
+			  url: "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/"+ contentInfo.contentId+"/",
+			  data: {"lftoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsImV4cGlyZXMiOjE0ODM3MzkyODcuNjQ0NzA0LCJ1c2VyX2lkIjoiNTZlNmYwNDg4YmI5OWExYjA5ZGE5MTBlIn0.IyCVpP4_uUu7HZf6MO-uuJQbAbmCarbqD47dvjmzRss", "tag_name": "cfc-red"},
+			  success: function (response) {
+			        console.log(response);
+			    },
+			  dataType: "json"
+			});      
+		}
+	}
+];  
+  
+var networkConfig = {
+		network: "sahilp.fyre.co"
+};
+  
+var convConfig = {
+    siteId: '381270',
+    articleId: 'cfc-tagging1',
+    el: 'livefyre',
+    actionButtons: customActionButtons,
+    collectionMeta: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoibGl2ZWJsb2ciLCJ0aXRsZSI6IkNoZWxzZWEgQ29udGVudCBUYWcgQnV0dG9uIFBPQyIsImFydGljbGVJZCI6ImNmYy10YWdnaW5nMSIsInVybCI6Imh0dHA6Ly9jb2RlcGVuLmlvL2l0c2FoaWwvcGVuL1FLeFJBbSIsImlzcyI6InVybjpsaXZlZnlyZTpzYWhpbHAuZnlyZS5jbzpzaXRlPTM4MTI3MCJ9.9t2YmnIiyqru5rXeY3c8Vfq7V-pYRvXEpBvLuJ2CA0w',
+    checksum: '68ff8b4e26b5d1616a650daf2b56e925'
+};
+Livefyre.require(['fyre.conv#3'], function(Conv) {
+    new Conv(networkConfig, [convConfig], function(blogWidget) {});
+});
+var lftoken;
+var lftoken = $('#personas').val();
+$("#personas").change(function() {
+  lftoken = $(this).val();     
+});
+document.getElementById("postbutton").addEventListener("click", function(data) {
+    $.ajax({
+      type: "POST",
+      url: "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/593290507/",
+      data: {"lftoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsImV4cGlyZXMiOjE0ODM3MzkyODcuNjQ0NzA0LCJ1c2VyX2lkIjoiNTZlNmYwNDg4YmI5OWExYjA5ZGE5MTBlIn0.IyCVpP4_uUu7HZf6MO-uuJQbAbmCarbqD47dvjmzRss", "tag_name": "buttontag"},
+      success: function (response) {
+        console.log(response);
+      },
+      dataType: "json"
+    });
+});
+Livefyre.require(['auth'], function (auth) {
+	auth.delegate({
+    login: function (cb) {
+      cb(null,{livefyre:lftoken});
+    },
+    logout: function (finishLogout) {
+      finishLogout(null);
+    }
+  }); 
+});
+</script>
+   </body>
+</html>
