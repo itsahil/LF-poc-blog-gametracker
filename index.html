@@ -93,8 +93,7 @@ button {
   left: 30%;
 }
 </style>
-
-<button id="postbutton">Add Tag</button><br><br>
+<!--  -->
 <div class="auth">
 I Am: <select name="personas" id="personas">
 	  <option value="">Please Select a User Profile, then click Sign In</option>
@@ -107,7 +106,7 @@ I Am: <select name="personas" id="personas">
 
 <script>
 var tagApi;
-  
+// Define Custom Buttons on Posts to be used to apply tags
 var customActionButtons = [
 	{
 		key: "Chelsea Goal",
@@ -159,7 +158,8 @@ var customActionButtons = [
 		}
 	}
 ];  
-  
+
+//  Load Live Blog app
 var networkConfig = {
 		network: "sahilp.fyre.co"
 };
@@ -175,22 +175,15 @@ var convConfig = {
 Livefyre.require(['fyre.conv#3'], function(Conv) {
     new Conv(networkConfig, [convConfig], function(blogWidget) {});
 });
+	
+// Get Persona from selector and update auth
 var lftoken;
 var lftoken = $('#personas').val();
 $("#personas").change(function() {
   lftoken = $(this).val();     
 });
-document.getElementById("postbutton").addEventListener("click", function(data) {
-    $.ajax({
-      type: "POST",
-      url: "https://sahilp.quill.fyre.co/api/v3.0/collection/175261510/tag/593290507/",
-      data: {"lftoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb21haW4iOiJzYWhpbHAuZnlyZS5jbyIsImV4cGlyZXMiOjE0ODM3MzkyODcuNjQ0NzA0LCJ1c2VyX2lkIjoiNTZlNmYwNDg4YmI5OWExYjA5ZGE5MTBlIn0.IyCVpP4_uUu7HZf6MO-uuJQbAbmCarbqD47dvjmzRss", "tag_name": "buttontag"},
-      success: function (response) {
-        console.log(response);
-      },
-      dataType: "json"
-    });
-});
+
+// hardcoded Livefyre auth code
 Livefyre.require(['auth'], function (auth) {
 	auth.delegate({
     login: function (cb) {
